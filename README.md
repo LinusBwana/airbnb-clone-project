@@ -182,3 +182,22 @@ The review and rating system enables guests to share authentic feedback about th
 
 ### Real-time Communication
 Our messaging system facilitates direct communication between guests and hosts throughout the booking process and stay duration. Users can ask questions about properties, coordinate check-in details, and resolve any issues that arise during their stay. This feature enhances customer service, reduces booking uncertainty, and creates a more connected community experience on the platform.
+
+---
+
+## API Security
+
+### Authentication & Authorization
+The platform implements Django REST Framework's BasicAuthentication combined with role-based access control to ensure users can only access and modify data they are authorized to handle. BasicAuthentication provides secure username/password verification for API access, with session management handled by Django's built-in authentication system. This is crucial for protecting user accounts from unauthorized access and ensuring that hosts can only manage their own properties while guests can only access their own booking information.
+
+### Data Protection & Encryption
+All sensitive data including passwords, payment information, and personal details are encrypted both in transit and at rest using industry-standard AES-256 encryption. API communications are secured through HTTPS/TLS protocols, and database connections use encrypted channels. This comprehensive approach is essential for maintaining user trust, complying with data protection regulations like GDPR, and preventing data breaches that could compromise user privacy and financial information.
+
+### Rate Limiting & API Security
+Advanced rate limiting mechanisms prevent API abuse, DDoS attacks, and automated scraping attempts while ensuring legitimate users maintain smooth platform access. IP-based and user-based throttling, along with request validation and sanitization, protect against malicious activities. These measures are critical for maintaining platform stability, preventing resource exhaustion, and protecting against fraudulent booking attempts or payment system exploitation.
+
+### Payment Security
+Payment processing implements PCI DSS compliance standards with tokenization of sensitive card data and secure integration with trusted payment gateways. All financial transactions are logged and monitored for suspicious activity with real-time fraud detection mechanisms. This level of security is paramount for protecting users' financial information, maintaining merchant account compliance, and building the trust necessary for users to confidently make high-value accommodation bookings.
+
+### Input Validation & Injection Prevention
+Comprehensive input validation and sanitization prevent SQL injection, XSS attacks, and other common web vulnerabilities through parameterized queries and strict data type validation. All user inputs are validated both client-side and server-side with additional business logic validation. This protection is essential for preventing malicious users from compromising the database
