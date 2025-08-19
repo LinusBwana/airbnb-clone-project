@@ -26,3 +26,127 @@ This project is the backend implementation of an Airbnb Clone, built to replicat
 - **Database Administrator:** Manages database design, indexing, and optimizations.
 - **DevOps Engineer**: Handles deployment, monitoring, and scaling of the backend services.
 - **QA Engineer:** Ensures the backend functionalities are thoroughly tested and meet quality standards.
+
+## Database Design
+
+### Key Entities Overview
+
+#### 1. Users
+**Purpose**: Store user account information and authentication details
+**Important Fields**:
+- `user_id` (Primary Key) - Unique identifier
+- `email` - User's email address (unique)
+- `password_hash` - Encrypted password
+- `first_name` - User's first name
+- `last_name` - User's last name
+- `phone_number` - Contact number
+- `date_created` - Account creation timestamp
+- `is_host` - Boolean flag indicating if user can list properties
+- `profile_picture_url` - Link to user's profile image
+
+#### 2. Properties
+**Purpose**: Store property listings and details
+**Important Fields**:
+- `property_id` (Primary Key) - Unique identifier
+- `host_id` (Foreign Key) - References Users table
+- `title` - Property listing title
+- `description` - Detailed property description
+- `address` - Property location
+- `price_per_night` - Nightly rate
+- `max_guests` - Maximum occupancy
+- `property_type` - (apartment, house, villa, etc.)
+- `amenities` - JSON field storing available amenities
+- `is_available` - Availability status
+- `date_created` - Listing creation timestamp
+
+#### 3. Bookings
+**Purpose**: Manage property reservations and booking details
+**Important Fields**:
+- `booking_id` (Primary Key) - Unique identifier
+- `property_id` (Foreign Key) - References Properties table
+- `guest_id` (Foreign Key) - References Users table
+- `check_in_date` - Booking start date
+- `check_out_date` - Booking end date
+- `total_amount` - Total booking cost
+- `booking_status` - (pending, confirmed, cancelled, completed)
+- `number_of_guests` - Guest count for this booking
+- `special_requests` - Additional guest requirements
+- `date_created` - Booking creation timestamp
+
+#### 4. Payments
+**Purpose**: Handle payment transactions and financial records
+**Important Fields**:
+- `payment_id` (Primary Key) - Unique identifier
+- `booking_id` (Foreign Key) - References Bookings table
+- `amount` - Payment amount
+- `payment_method` - (credit_card, paypal, bank_transfer)
+- `payment_status` - (pending, completed, failed, refunded)
+- `transaction_id` - External payment gateway reference
+- `payment_date` - When payment was processed
+- `refund_amount` - Amount refunded (if applicable)
+
+#### 5. Reviews
+**Purpose**: Store user reviews and ratings for properties
+**Important Fields**:
+- `review_id` (Primary Key) - Unique identifier
+- `property_id` (Foreign Key) - References Properties table
+- `reviewer_id` (Foreign Key) - References Users table
+- `booking_id` (Foreign Key) - References Bookings table
+- `rating` - Numerical rating (1-5 stars)
+- `comment` - Written review text
+- `date_created` - Review submission timestamp
+- `is_verified` - Boolean indicating if review is from verified booking
+
+#### 6. Property Images
+**Purpose**: Store multiple images for each property
+**Important Fields**:
+- `image_id` (Primary Key) - Unique identifier
+- `property_id` (Foreign Key) - References Properties table
+- `image_url` - Link to stored image
+- `alt_text` - Image description for accessibility
+- `is_primary` - Boolean indicating main property image
+- `display_order` - Order for image gallery
+
+### Entity Relationships
+
+#### One-to-Many Relationships
+
+1. **Users → Properties**
+   - One user (host) can own multiple properties
+   - Each property belongs to exactly one host
+   - Relationship: `Users.user_id = Properties.host_id`
+
+2. **Users → Bookings (as Guest)**
+   - One user can make multiple bookings
+   - Each booking is made by exactly one guest
+   - Relationship: `Users.user_id = Bookings.guest_id`
+
+3. **Properties → Bookings**
+   - One property can have multiple bookings
+   - Each booking is for exactly one property
+   - Relationship: `Properties.property_id = Bookings.property_id`
+
+4. **Bookings → Payments**
+   - One booking can have multiple payments (partial payments, refunds)
+   - Each payment is associated with exactly one booking
+   - Relationship: `Bookings.booking_id = Payments.booking_id`
+
+5. **Properties → Reviews**
+   - One property can have multiple reviews
+   - Each review is for exactly one property
+   - Relationship: `Properties.property_id = Reviews.property_id`
+
+6. **Users → Reviews**
+   - One user can write multiple reviews
+   - Each review is written by exactly one user
+   - Relationship: `Users.user_id = Reviews.reviewer_id`
+
+7. **Bookings → Reviews**
+   - One booking can have one review (optional)
+   - Each review is based on exactly one booking
+   - Relationship: `Bookings.booking_id = Reviews.booking_id`
+
+8. **Properties → Property Images**
+   - One property can have multiple images
+   - Each image belongs to exactly one property
+   - Relationship: `Properties.property_id = Property_Images.property_id`
